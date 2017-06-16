@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8" />
+<title>Main</title>
+</head>
+<body>
+	<span sec:authentication="name"></span>
+	<span sec:authentication="principal.authorities"></span> 
+
+	<div sec:authorize="hasAuthority('ADMIN')">- only admin!!!!</div>
+	<div sec:authorize="hasAuthority('USER')">- only user</div>
+
+	<form th:action="@{/logout}" method="post">
+		<input type="submit" value="Sign Out" />
+	</form>
+	
+	<a th:attr="href=@{/admin}">admin</a>
+	<a th:attr="href=@{/user}">user</a>
+</body>
+</html>
