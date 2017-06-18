@@ -56,7 +56,7 @@ public class WebController {
   public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, 
 		  Model model ,String[] roles ){
     String password = userForm.getPassword();
-    userService.saveUser(userForm);
+    userService.saveUser(userForm,roles);
     securityService.autologin(userForm.getUsername(),password);
     return "redirect:/main";
   }
