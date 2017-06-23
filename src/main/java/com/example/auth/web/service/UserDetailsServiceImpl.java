@@ -13,12 +13,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import com.example.auth.web.model.CustomUser;
 import com.example.auth.web.model.Role;
 import com.example.auth.web.model.User;
 import com.example.auth.web.repository.UserRepository;
 
 @Component
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {                                                
 	@Autowired
 	UserRepository userRepository;
 
@@ -31,9 +32,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		for (Role role : user.getRoles()) {
 			grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
 		}
-
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), 
+		
+		return new CustomUser(user.getUsername(),user.getPassword(),grantedAuthorities,user.getId());
+		/*return new org.springframework.security.core.userdetails.User(user.getUsername(), 
 																	  user.getPassword(),
-																	  grantedAuthorities);
+																	  grantedAuthorities);*/
 	}
 }

@@ -8,6 +8,9 @@
 <body>
 	<span sec:authentication="name"></span>
 	<span sec:authentication="principal.authorities"></span> 
+	
+	<p th:text="${session.userId}"></p>
+	
 
 	<div sec:authorize="hasAuthority('ADMIN')">- only admin!!!!</div>
 	<div sec:authorize="hasAuthority('USER')">- only user</div>

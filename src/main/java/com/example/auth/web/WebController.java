@@ -1,6 +1,7 @@
 package com.example.auth.web;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,12 +10,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.example.auth.web.model.User;
 import com.example.auth.web.service.SecurityService;
 import com.example.auth.web.service.UserService;
 
 @Controller
+@SessionAttributes("user_id")
 public class WebController {
   @Autowired
   UserService userService;
@@ -23,7 +26,9 @@ public class WebController {
   private SecurityService securityService;
   
   @RequestMapping(value="/main")
-  public String main(){
+  public String main(HttpSession session){  
+    Long user_id = (Long)session.getAttribute("user_id");
+    System.out.println(user_id);
     return "main";
   }
   
@@ -54,10 +59,13 @@ public class WebController {
   // 회원가입 처리 후 로그인 
   @RequestMapping(value="/registration",method=RequestMethod.POST)
   public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, 
-		  Model model ,String[] roles ){
+		  Model model ,String[] roles, HttpSession session){
     String password = userForm.getPassword();
-    userService.saveUser(userForm,roles);
+    userForm = userService.saveUser(userForm,roles);
     securityService.autologin(userForm.getUsername(),password);
+    
+    // session
+    session.setAttribute("userId", userForm.getId());
     return "redirect:/main";
   }
   
