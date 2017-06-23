@@ -7,12 +7,14 @@
 <body>
 Registration
 <form name="userForm" th:action="@{/registration}" method="post">
-  name : <input type="text" name="username" id="username"/>
-  password : <input type="text" name="password" id="password"/>
+  name : <input type="text" name="username" id="username" th:value="${userForm.username}"/>
+  password : <input type="password" name="password" id="password" th:value="${userForm.password}"/>
   <br/>
   ADMIN <input type="checkbox" name="roles" value="ADMIN"/> | 
   USER  <input type="checkbox" name="roles" value="USER" />
   <hr/>
+  <div th:if="${error}">username is duplicated.</div>
+  
   <input type="submit" value="join" />
 </form>
 

@@ -13,6 +13,7 @@ import com.example.auth.web.model.Role;
 import com.example.auth.web.model.User;
 import com.example.auth.web.repository.UserRepository;
 
+import javassist.bytecode.DuplicateMemberException;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -25,7 +26,13 @@ public class UserServiceImpl implements UserService {
   private BCryptPasswordEncoder bCryptPasswordEncoder;
     
   @Override  
-  public User saveUser(User user,String[] roles) {
+  public User saveUser(User user,String[] roles) throws DuplicateMemberException {
+    // id duplicate check
+    User dbUser = userRepository.findByUsername(user.getUsername());
+    if( dbUser != null ){
+      throw new DuplicateMemberException("username is duplicated");
+    }
+    
     user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
     Set<Role> rolesSet = new HashSet<Role>();
     for(String role:roles){

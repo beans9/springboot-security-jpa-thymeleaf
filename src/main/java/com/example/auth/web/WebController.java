@@ -16,6 +16,8 @@ import com.example.auth.web.model.User;
 import com.example.auth.web.service.SecurityService;
 import com.example.auth.web.service.UserService;
 
+import javassist.bytecode.DuplicateMemberException;
+
 @Controller
 @SessionAttributes("user_id")
 public class WebController {
@@ -59,9 +61,19 @@ public class WebController {
   // 회원가입 처리 후 로그인 
   @RequestMapping(value="/registration",method=RequestMethod.POST)
   public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, 
-		  Model model ,String[] roles, HttpSession session){
+		Model model ,String[] roles, HttpSession session){
     String password = userForm.getPassword();
-    userForm = userService.saveUser(userForm,roles);
+    
+    try {
+      userForm = userService.saveUser(userForm,roles);
+    } catch (DuplicateMemberException e) {
+      e.printStackTrace();
+      model.addAttribute("error", "username is duplicated.");
+      model.addAttribute("userForm",userForm);
+      
+      return "/registration";
+    }
+    
     securityService.autologin(userForm.getUsername(),password);
     
     // session
