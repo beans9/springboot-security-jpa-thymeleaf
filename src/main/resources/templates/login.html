@@ -13,6 +13,10 @@
 		<div th:if="${logout}">You have been logged out successfully</div>
 		<div th:if="${error}">Invalid username and password.</div>
 		<input type="submit" value="sign in" />
+		
+		<label for="remember-me">Remember me</label>
+    <input name="remember-me" type="checkbox"/> 
+            
 	</form>
 	<a href="/registration">registration</a>
 </body>

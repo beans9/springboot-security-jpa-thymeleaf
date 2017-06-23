@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.example.auth.config.WebSecurityConfig;
 import com.example.auth.web.model.User;
 import com.example.auth.web.service.SecurityService;
 import com.example.auth.web.service.UserService;
@@ -29,18 +31,24 @@ public class WebController {
   
   @RequestMapping(value="/main")
   public String main(HttpSession session){  
-    Long user_id = (Long)session.getAttribute("user_id");
-    System.out.println(user_id);
+    Long userId = (Long)session.getAttribute("userId");
     return "main";
   }
   
   // 로그인 
   @RequestMapping("/login")
-  public String login(Model model, String error, String logout, HttpServletRequest request ){
+  public String login(Model model, String error, String logout, HttpServletRequest request 
+    ,@CookieValue(value=WebSecurityConfig.REMEMBER_ME_COOKE_NAME,required=false) String cookie ){
+    String page = "login";
+    
+    if( cookie != null ){
+      page = "redirect:/main";
+    }
+    
     if (logout != null){
       model.addAttribute("logout", "You have been logged out successfully.");
     }
-    return "login";
+    return page;
   }
   
   // 로그인 실패시
